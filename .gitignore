@@ -116,3 +116,5 @@ run/
 
 # Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
 !gradle-wrapper.jar
+runs/junit/junit_test_args.txt
+runs/junit/junit_jvm_args.txt
