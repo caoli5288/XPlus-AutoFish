@@ -49,7 +49,7 @@ public class XPlusAutofish {
         modAutofish.getScheduler().scheduleRepeatingAction(10000, () -> {
             if(!modAutofish.getConfig().isPersistentMode()) return;
             if(!isHoldingFishingRod()) return;
-            if(modAutofish.getConfig().isNoBreak() && Objects.requireNonNull(getHeldItem()).getDamageValue() >= 63) return;
+            if(shouldPreventBreak()) return;
             if(hookExists){
                 if(isBobberInWater()) return;
                 else useRod();
@@ -158,7 +158,7 @@ public class XPlusAutofish {
             //State checks to ensure we can still fish once this runs
             if(hookExists) return;
             if(!isHoldingFishingRod()) return;
-            if(modAutofish.getConfig().isNoBreak() && Objects.requireNonNull(getHeldItem()).getDamageValue() >= 63) return;
+            if(shouldPreventBreak()) return;
 
             useRod();
         });
@@ -187,17 +187,17 @@ public class XPlusAutofish {
     public void switchToFirstRod(LocalPlayer player) {
         if(player != null) {
             Inventory inventory = player.getInventory();
-            for (int i = 0; i < inventory.items.size(); i++) {
-                ItemStack slot = inventory.items.get(i);
+            for (int i = 0; i < inventory.getNonEquipmentItems().size(); i++) {
+                ItemStack slot = inventory.getItem(i);
                 if (slot.getItem() == Items.FISHING_ROD) {
                     if (i < 9) { //hotbar only
                         if (modAutofish.getConfig().isNoBreak()) {
-                            if (slot.getDamageValue() < 63) {
-                                inventory.selected = i;
+                            if (slot.getDamageValue() < slot.getMaxDamage() - 1) {
+                                inventory.setSelectedSlot(i);;
                                 return;
                             }
                         } else {
-                            inventory.selected = i;
+                            inventory.setSelectedSlot(i);;
                             return;
                         }
                     }
@@ -322,6 +322,12 @@ public class XPlusAutofish {
                 (long) (modAutofish.getConfig().getRecastDelay() * (1 - (Math.random() * modAutofish.getConfig().getRandomDelay() * 0.01))) :
                 (long) (modAutofish.getConfig().getRecastDelay() * (1 + (Math.random() * modAutofish.getConfig().getRandomDelay() * 0.01)));
 
+    }
+
+    private boolean shouldPreventBreak(){
+        if(modAutofish.getConfig().isNoBreak()) return false;
+        ItemStack item = getHeldItem();
+        return item != null && item.getDamageValue() == item.getMaxDamage() - 1;
     }
     
 }
