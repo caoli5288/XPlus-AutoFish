@@ -325,7 +325,7 @@ public class XPlusAutofish {
     }
 
     private boolean shouldPreventBreak(){
-        if(modAutofish.getConfig().isNoBreak()) return false;
+        if(!modAutofish.getConfig().isNoBreak()) return false;
         ItemStack item = getHeldItem();
         return item != null && item.getDamageValue() == item.getMaxDamage() - 1;
     }
