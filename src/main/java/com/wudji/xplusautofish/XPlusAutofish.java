@@ -265,11 +265,11 @@ public class XPlusAutofish {
         for(int yi = -2; yi <= 2; yi++){
             if(!(BlockPos.betweenClosedStream(x - 2, y + yi, z - 2, x + 2, y + yi, z + 2).allMatch((blockPos ->
                     // every block is water
-                    bobber.getCommandSenderWorld().getBlockState(blockPos).getBlock() == Blocks.WATER
+                    bobber.level().getBlockState(blockPos).getBlock() == Blocks.WATER
             )) || BlockPos.betweenClosedStream(x - 2, y + yi, z - 2, x + 2, y + yi, z + 2).allMatch((blockPos ->
                     // or every block is air or lily pad
-                    bobber.getCommandSenderWorld().getBlockState(blockPos).getBlock() == Blocks.AIR
-                            || bobber.getCommandSenderWorld().getBlockState(blockPos).getBlock() == Blocks.LILY_PAD
+                    bobber.level().getBlockState(blockPos).getBlock() == Blocks.AIR
+                            || bobber.level().getBlockState(blockPos).getBlock() == Blocks.LILY_PAD
             )))){
                 // didn't pass the check
                 if(!alreadyAlertOP){
