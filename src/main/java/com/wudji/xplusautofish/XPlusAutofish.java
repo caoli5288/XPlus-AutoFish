@@ -117,7 +117,7 @@ public class XPlusAutofish {
      * For multiplayer detection only
      */
     public void handleChat(ClientboundSystemChatPacket packet) {
-        if (modAutofish.getConfig().isAutofishEnabled()) {
+        if (modAutofish.getConfig().isAutofishEnabled() && client.player != null) {
             if (!client.isLocalServer()) {
                 if (isHoldingFishingRod()) {
                     //check that either the hook exists, or it was just removed
@@ -233,7 +233,9 @@ public class XPlusAutofish {
     }
 
     public boolean isHoldingFishingRod() {
-        return isItemFishingRod(Objects.requireNonNull(getHeldItem()).getItem());
+        ItemStack itemStack = getHeldItem();
+        if(itemStack == null) return false;
+        return isItemFishingRod(getHeldItem().getItem());
     }
 
     private InteractionHand getCorrectHand() {
