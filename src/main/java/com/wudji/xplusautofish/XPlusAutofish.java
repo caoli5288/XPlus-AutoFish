@@ -138,7 +138,8 @@ public class XPlusAutofish {
     }
 
     public void catchFish() {
-        if(!modAutofish.getScheduler().isRecastQueued()) { //prevents double reels
+        if(!modAutofish.getScheduler().isRecastQueued()) {
+            modAutofish.getScheduler().onFishCaught();//prevents double reels
             detectOpenWater();
 
             //queue actions

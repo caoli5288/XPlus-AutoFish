@@ -217,7 +217,7 @@ public class AutoFishConfigScreen {
                 .build();
 
         //Turn Duration Slider
-        AbstractConfigListEntry turnDurationSlider = entryBuilder.startIntSlider(Component.translatable("options.autofish.turn_duration.title"), config.getTurnDruation(), 100, 5000)
+        AbstractConfigListEntry turnDurationSlider = entryBuilder.startIntSlider(Component.translatable("options.autofish.turn_duration.title"), config.getTurnDuration(), 100, 5000)
                 .setDefaultValue(defaults.getTurnDuration())
                 .setTooltip(
                         Component.translatable("options.autofish.turn_duration.tooltip_0"),
