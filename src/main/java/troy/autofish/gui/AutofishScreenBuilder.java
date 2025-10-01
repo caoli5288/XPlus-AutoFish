@@ -192,6 +192,44 @@ public class AutofishScreenBuilder {
                 })
                 .build();
 
+        //Enable Auto Turn View
+        AbstractConfigListEntry toggleAutoTurnView = entryBuilder.startBooleanToggle(Text.translatable("options.autofish.auto_turn_view.title"), config.isAutoTurnView())
+                .setDefaultValue(defaults.isAutoTurnView())
+                .setTooltip(
+                        Text.translatable("options.autofish.auto_turn_view.tooltip_0"),
+                        Text.translatable("options.autofish.auto_turn_view.tooltip_1")
+                )
+                .setSaveConsumer(newValue -> {
+                    modAutofish.getConfig().setAutoTurnView(newValue);
+                })
+                .setYesNoTextSupplier(yesNoTextSupplier)
+                .build();
+
+        //Turn Angle Slider
+        AbstractConfigListEntry turnAngleSlider = entryBuilder.startFloatField(Text.translatable("options.autofish.turn_angle.title"), config.getTurnAngle())
+                .setDefaultValue(defaults.getTurnAngle())
+                .setTooltip(
+                        Text.translatable("options.autofish.turn_angle.tooltip_0"),
+                        Text.translatable("options.autofish.turn_angle.tooltip_1")
+                )
+                .setSaveConsumer(newValue -> {
+                    modAutofish.getConfig().setTurnAngle(newValue);
+                })
+                .build();
+
+        //Turn Duration Slider
+        AbstractConfigListEntry turnDurationSlider = entryBuilder.startIntSlider(Text.translatable("options.autofish.turn_duration.title"), config.getTurnDuration(), 100, 5000)
+                .setDefaultValue(defaults.getTurnDuration())
+                .setTooltip(
+                        Text.translatable("options.autofish.turn_duration.tooltip_0"),
+                        Text.translatable("options.autofish.turn_duration.tooltip_1")
+                )
+                .setTextGetter(value -> Text.translatable("options.autofish.turn_duration.value", value))
+                .setSaveConsumer(newValue -> {
+                    modAutofish.getConfig().setTurnDuration(newValue);
+                })
+                .build();
+
 
         SubCategoryBuilder subCatBuilderBasic = entryBuilder.startSubCategory(Text.translatable("options.autofish.basic.title"));
         subCatBuilderBasic.add(toggleAutofish);
@@ -200,6 +238,9 @@ public class AutofishScreenBuilder {
         subCatBuilderBasic.add(toggleBreakProtection);
         subCatBuilderBasic.add((togglePersistentMode));
         subCatBuilderBasic.setExpanded(true);
+        subCatBuilderBasic.add(toggleAutoTurnView);
+        subCatBuilderBasic.add(turnAngleSlider);
+        subCatBuilderBasic.add(turnDurationSlider);
 
         SubCategoryBuilder subCatBuilderAdvanced = entryBuilder.startSubCategory(Text.translatable("options.autofish.advanced.title"));
         subCatBuilderAdvanced.add(toggleSoundDetection);

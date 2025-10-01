@@ -17,6 +17,12 @@ public class AutofishScheduler {
     //For tracking world change events. This is used to reset repeating action timers when a world is joined
     private boolean doesWorldExist;
 
+    //ViewTurnStates
+    private float originalYaw = 0.0f;
+    private float originalPitch = 0.0f;
+    private boolean isTurning = false;
+    private boolean turnLeft = true;
+
     public AutofishScheduler(FabricModAutofish modAutofish) {
         this.modAutofish = modAutofish;
     }
@@ -32,7 +38,10 @@ public class AutofishScheduler {
         }
 
         //Clear out the action queue whenever Autofish is disabled or we are not ingame
-        if (!modAutofish.getConfig().isAutofishEnabled()) queuedActions.clear();
+        if (!modAutofish.getConfig().isAutofishEnabled()){
+            queuedActions.clear();
+            stopViewTurn();
+        }
         //Clear out the action queue whenever world or player goes null
         //Also returns method to prevent NullPointers on any scheduled actions
         if (client.world == null || client.player == null) {
@@ -46,6 +55,63 @@ public class AutofishScheduler {
         repeatingActions.forEach(Action::tick);
 
     }
+
+    //If player caught a fish,then turn view
+    public void onFishCaught() {
+        if(modAutofish.getConfig().isAutofishEnabled() && !isTurning) {
+            scheduleViewTurn();
+        }
+    }
+
+    private void scheduleViewTurn() {
+        MinecraftClient client = MinecraftClient.getInstance();
+        if(client.player == null) return;
+
+        //Save original yaw and pitch
+        originalYaw = client.player.getYaw();
+        originalPitch = client.player.getPitch();
+        isTurning = true;
+
+        //Schedule a view turn action
+        scheduleAction(ActionType.TURN_VIEW, 0, () -> {
+            if (client.player != null) {
+                float turnAngle = modAutofish.getConfig().getTurnAngle();
+                if (!turnLeft) {
+                    turnAngle = -turnAngle;
+                }
+                float targetYaw = client.player.getYaw() + turnAngle;
+                client.player.setYaw(targetYaw);
+            }
+        });
+
+        //Schedule an action to finish the turn state after the turn duration, without resetting view
+        scheduleAction(ActionType.RESET_VIEW, modAutofish.getConfig().getTurnDuration(), () -> {
+            if (isTurning) {
+                isTurning = false;
+                turnLeft = !turnLeft;
+            }
+        });
+    }
+
+    public boolean isViewTurning() {return isTurning;}
+
+    public void stopViewTurn(){
+        if(isTurning) {
+            MinecraftClient client = MinecraftClient.getInstance();
+            if (client.player != null) {
+                client.player.setYaw(originalYaw);
+                client.player.setPitch(originalPitch);
+            }
+            isTurning = false;
+
+            // Clear any scheduled view turn actions
+            queuedActions.removeIf(action ->
+                    action.getActionType() == ActionType.TURN_VIEW ||
+                            action.getActionType() == ActionType.RESET_VIEW
+            );
+        }
+    }
+
 
     public void scheduleAction(ActionType actionType, long delay, Runnable runnable) {
         queuedActions.add(new Action(actionType, delay, runnable));

@@ -4,5 +4,7 @@ public enum ActionType {
     RECAST,
     ROD_SWITCH,
     REPEATING_ACTION,
-    REEL_IN
+    REEL_IN,
+    TURN_VIEW,
+    RESET_VIEW
 }

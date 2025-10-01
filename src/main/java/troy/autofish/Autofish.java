@@ -48,8 +48,13 @@ public class Autofish {
         //Initiate the repeating action for persistent mode casting
         modAutofish.getScheduler().scheduleRepeatingAction(10000, () -> {
             if(!modAutofish.getConfig().isPersistentMode()) return;
+            if(shouldPreventBreak()) return;
             if(!isHoldingFishingRod()) return;
-            if(hookExists) return;
+            if(hookExists){
+                if(isBobberInWater()) return;
+
+                else useRod();
+            }
             if(modAutofish.getScheduler().isRecastQueued()) return;
 
             useRod();
@@ -60,7 +65,7 @@ public class Autofish {
 
         if (client.world != null && client.player != null && modAutofish.getConfig().isAutofishEnabled()) {
 
-           timeMillis = Util.getMeasuringTimeMs(); //update current working time for this tick
+            timeMillis = Util.getMeasuringTimeMs(); //update current working time for this tick
 
             if (isHoldingFishingRod()) {
                 if (client.player.fishHook != null) {
@@ -135,15 +140,16 @@ public class Autofish {
     }
 
     public void catchFish() {
-            if(!modAutofish.getScheduler().isRecastQueued()) { //prevents double reels
-                if (client.player != null) {
-                    detectOpenWater(client.player.fishHook);
-                }
-                //queue actions
-                queueRodSwitch();
-                queueRecast();
-                modAutofish.getScheduler().scheduleAction(ActionType.REEL_IN, modAutofish.getConfig().getReelInDelay(), this::useRod);
+        if(!modAutofish.getScheduler().isRecastQueued()) { //prevents double reels
+            modAutofish.getScheduler().onFishCaught();
+            if (client.player != null) {
+                detectOpenWater(client.player.fishHook);
             }
+            //queue actions
+            queueRodSwitch();
+            queueRecast();
+            modAutofish.getScheduler().scheduleAction(ActionType.REEL_IN, modAutofish.getConfig().getReelInDelay(), this::useRod);
+        }
     }
 
     public void queueRecast() {
@@ -152,7 +158,7 @@ public class Autofish {
             //State checks to ensure we can still fish once this runs
             if(hookExists) return;
             if(!isHoldingFishingRod()) return;
-            if(modAutofish.getConfig().isNoBreak() && getHeldItem().getDamage() >= 63) return;
+            if(shouldPreventBreak()) return;
 
             useRod();
         });
@@ -185,11 +191,11 @@ public class Autofish {
         for(int yi = -2; yi <= 2; yi++){
             if(!(BlockPos.stream(x - 2, y + yi, z - 2, x + 2, y + yi, z + 2).allMatch((blockPos ->
                     // every block is water
-                        bobber.getEntityWorld().getBlockState(blockPos).getBlock() == Blocks.WATER
-                    )) || BlockPos.stream(x - 2, y + yi, z - 2, x + 2, y + yi, z + 2).allMatch((blockPos ->
+                    bobber.getWorld().getBlockState(blockPos).getBlock() == Blocks.WATER
+            )) || BlockPos.stream(x - 2, y + yi, z - 2, x + 2, y + yi, z + 2).allMatch((blockPos ->
                     // or every block is air or lily pad
-                        bobber.getEntityWorld().getBlockState(blockPos).getBlock() == Blocks.AIR
-                        || bobber.getEntityWorld().getBlockState(blockPos).getBlock() == Blocks.LILY_PAD
+                    bobber.getWorld().getBlockState(blockPos).getBlock() == Blocks.AIR
+                            || bobber.getWorld().getBlockState(blockPos).getBlock() == Blocks.LILY_PAD
             )))){
                 // didn't pass the check
                 if(!alreadyAlertOP){
@@ -223,22 +229,30 @@ public class Autofish {
     public void switchToFirstRod(ClientPlayerEntity player) {
         if(player != null) {
             PlayerInventory inventory = player.getInventory();
-            for (int i = 0; i < inventory.main.size(); i++) {
-                ItemStack slot = inventory.main.get(i);
+            for (int i = 0; i < inventory.getMainStacks().size(); i++) {
+                ItemStack slot = inventory.getMainStacks().get(i);
                 if (slot.getItem() == Items.FISHING_ROD) {
                     if (i < 9) { //hotbar only
                         if (modAutofish.getConfig().isNoBreak()) {
-                            if (slot.getDamage() < 63) {
-                                inventory.selectedSlot = i;
+                            if (slot.getDamage() < slot.getMaxDamage() - 1) {
+                                inventory.setSelectedSlot(i);
                                 return;
                             }
                         } else {
-                            inventory.selectedSlot = i;
+                            inventory.setSelectedSlot(i);
                             return;
                         }
                     }
                 }
             }
+        }
+    }
+
+    public boolean isBobberInWater(){
+        if(client.player != null && client.world != null && client.player.fishHook != null) {
+            return client.world.getBlockState(client.player.fishHook.getBlockPos()).getBlock() == Blocks.WATER;
+        } else{
+            return false;
         }
     }
 
@@ -250,7 +264,7 @@ public class Autofish {
                 actionResult = client.interactionManager.interactItem(client.player, hand);
             }
             if (actionResult != null && actionResult.isAccepted()) {
-                if (actionResult.shouldSwingHand()) {
+                if (actionResult == ActionResult.SUCCESS) {
                     client.player.swingHand(hand);
                 }
                 client.gameRenderer.firstPersonRenderer.resetEquipProgress(hand);
@@ -302,5 +316,11 @@ public class Autofish {
                 (long) (modAutofish.getConfig().getRecastDelay() * (1 - (Math.random() * modAutofish.getConfig().getRandomDelay() * 0.01))) :
                 (long) (modAutofish.getConfig().getRecastDelay() * (1 + (Math.random() * modAutofish.getConfig().getRandomDelay() * 0.01)));
 
+    }
+
+    private boolean shouldPreventBreak(){
+        if(!modAutofish.getConfig().isNoBreak()) return false;
+        ItemStack item = getHeldItem();
+        return item != null && item.getDamage() == item.getMaxDamage() - 1;
     }
 }

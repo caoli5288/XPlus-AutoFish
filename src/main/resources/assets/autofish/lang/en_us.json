@@ -73,6 +73,19 @@
   "options.autofish.basic.title": "Basic Options",
   "options.autofish.advanced.title": "Advanced Options",
 
+  "options.autofish.auto_turn_view.title": "Enable Auto Turn View",
+  "options.autofish.auto_turn_view.tooltip_0": "Automatically turn the camera view",
+  "options.autofish.auto_turn_view.tooltip_1": "when a fish is caught.",
+
+  "options.autofish.turn_angle.title": "Turn Angle",
+  "options.autofish.turn_angle.tooltip_0": "The angle in degrees to turn the camera",
+  "options.autofish.turn_angle.tooltip_1": "when a fish is caught.",
+
+  "options.autofish.turn_duration.title": "Turn Duration (ms)",
+  "options.autofish.turn_duration.value": "%d ms",
+  "options.autofish.turn_duration.tooltip_0": "How long to hold the turned view",
+  "options.autofish.turn_duration.tooltip_1": "before restoring to original position.",
+
   "info.autofish.open_water_detection.fail": "§c[Autofish] The area you're fishing in is not open water!§0",
   "info.autofish.open_water_detection.success": "§2[Autofish] You're fishing in open water!§0"
 }

@@ -1,4 +1,5 @@
 {
+  "modmenu.descriptionTranslation.autofish": "钓鱼要到岛上钓，不到岛上钓不到。",
   "key.autofish.open_gui": "打开Autofish界面",
   "options.autofish.title": "XPlus Autofish设置",
 
@@ -63,6 +64,19 @@
   "options.autofish.clear_regex.tooltip_0": "使用聊天栏正则表达式",
   "options.autofish.clear_regex.tooltip_1": "来触发重新投掷钓鱼竿.",
   "options.autofish.clear_regex.tooltip_2": "\u00A76可设置 \u00A7a正则表达式\u00A76.",
+
+  "options.autofish.auto_turn_view.title": "启用自动扭转视角",
+  "options.autofish.auto_turn_view.tooltip_0": "钓到鱼时自动扭转",
+  "options.autofish.auto_turn_view.tooltip_1": "摄像机视角。",
+
+  "options.autofish.turn_angle.title": "扭转角度",
+  "options.autofish.turn_angle.tooltip_0": "钓到鱼时摄像机",
+  "options.autofish.turn_angle.tooltip_1": "扭转的角度（度数）。",
+
+  "options.autofish.turn_duration.title": "扭转持续时间",
+  "options.autofish.turn_duration.value": "%d 毫秒",
+  "options.autofish.turn_duration.tooltip_0": "保持扭转视角的时间长度",
+  "options.autofish.turn_duration.tooltip_1": "然后恢复到原始位置。",
 
   "options.autofish.basic.title": "基本选项",
   "options.autofish.advanced.title": "高级选项",
