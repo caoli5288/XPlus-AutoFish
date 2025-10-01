@@ -48,12 +48,10 @@ public class FabricModAutofish implements ClientModInitializer {
             if (autofishGuiKey.wasPressed()) {
                 client.setScreen(AutofishScreenBuilder.buildScreen(this, client.currentScreen));
             }
+            guiChecker.toggleAutoFish(client);
             autofish.tick(client);
             scheduler.tick(client);
         }
-        guiChecker.toggleAutoFish(client);
-        autofish.tick(client);
-        scheduler.tick(client);
     }
 
     /**
