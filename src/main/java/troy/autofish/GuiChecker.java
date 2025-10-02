@@ -1,8 +1,6 @@
 package troy.autofish;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.ChatScreen;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 
 public class GuiChecker {
@@ -13,7 +11,6 @@ public class GuiChecker {
     }
 
     public void toggleAutoFish(MinecraftClient client) {
-        System.out.println(client.currentScreen);
         this.modAutofish.getConfig().setAutofishEnabled(!(client.currentScreen instanceof GenericContainerScreen));
     }
 }
