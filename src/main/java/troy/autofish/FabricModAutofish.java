@@ -20,6 +20,7 @@ public class FabricModAutofish implements ClientModInitializer {
 
     private static FabricModAutofish instance;
     private Autofish autofish;
+    private GuiChecker guiChecker;
     private AutofishScheduler scheduler;
     private KeyBinding autofishGuiKey;
     private ConfigManager configManager;
@@ -44,6 +45,7 @@ public class FabricModAutofish implements ClientModInitializer {
         this.scheduler = new AutofishScheduler(this);
         //Create Autofisher instance
         this.autofish = new Autofish(this);
+        this.guiChecker = new GuiChecker(this);
 
     }
 
@@ -52,6 +54,7 @@ public class FabricModAutofish implements ClientModInitializer {
             if (autofishGuiKey.wasPressed()) {
                 client.setScreen(AutofishScreenBuilder.buildScreen(this, client.currentScreen));
             }
+            guiChecker.toggleAutoFish(client);
             autofish.tick(client);
             scheduler.tick(client);
         }
