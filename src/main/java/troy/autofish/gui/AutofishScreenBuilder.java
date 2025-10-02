@@ -105,6 +105,18 @@ public class AutofishScreenBuilder {
                 .setYesNoTextSupplier(yesNoTextSupplier)
                 .build();
 
+        AbstractConfigListEntry toggleGUIChecker = entryBuilder.startBooleanToggle(Text.translatable("options.autofish.guichecker.title"), config.isPersistentMode())
+                .setDefaultValue(defaults.isDisableInGUI())
+                .setTooltip(
+                        Text.translatable("options.autofish.guichecker.tooltip_0"),
+                        Text.translatable("options.autofish.guichecker.tooltip_1")
+                )
+                .setSaveConsumer(newValue -> {
+                    modAutofish.getConfig().setDisableInGUI(newValue);
+                })
+                .setYesNoTextSupplier(yesNoTextSupplier)
+                .build();
+
 
         //Enable Sound Detection
         AbstractConfigListEntry toggleSoundDetection = entryBuilder.startBooleanToggle(Text.translatable("options.autofish.sound.title"), config.isUseSoundDetection())
@@ -237,10 +249,11 @@ public class AutofishScreenBuilder {
         subCatBuilderBasic.add(toggleOpenWaterDetection);
         subCatBuilderBasic.add(toggleBreakProtection);
         subCatBuilderBasic.add((togglePersistentMode));
-        subCatBuilderBasic.setExpanded(true);
+        subCatBuilderBasic.add(toggleGUIChecker);
         subCatBuilderBasic.add(toggleAutoTurnView);
         subCatBuilderBasic.add(turnAngleSlider);
         subCatBuilderBasic.add(turnDurationSlider);
+        subCatBuilderBasic.setExpanded(true);
 
         SubCategoryBuilder subCatBuilderAdvanced = entryBuilder.startSubCategory(Text.translatable("options.autofish.advanced.title"));
         subCatBuilderAdvanced.add(toggleSoundDetection);
@@ -249,7 +262,7 @@ public class AutofishScreenBuilder {
         subCatBuilderAdvanced.add(randomDelaySlider);
         subCatBuilderAdvanced.add(reelInDelay);
         subCatBuilderAdvanced.add(clearLagRegexField);
-        subCatBuilderAdvanced.setExpanded(true);
+        subCatBuilderAdvanced.setExpanded(false);
 
         configCat.addEntry(subCatBuilderBasic.build());
         configCat.addEntry(subCatBuilderAdvanced.build());
