@@ -55,4 +55,10 @@ java {
 	}
 }
 
+loom{
+	mixin {
+		add(sourceSets.main, "autofish.refmap.json")
+	}
+}
+
 
