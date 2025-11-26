@@ -1,5 +1,6 @@
 package troy.autofish;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -250,7 +251,8 @@ public class Autofish {
 
     public boolean isBobberInWater(){
         if(client.player != null && client.world != null && client.player.fishHook != null) {
-            return client.world.getBlockState(client.player.fishHook.getBlockPos()).getBlock() == Blocks.WATER;
+            Block block = client.world.getBlockState(client.player.fishHook.getBlockPos()).getBlock();
+            return block == Blocks.WATER || block == Blocks.BUBBLE_COLUMN;
         } else{
             return false;
         }
