@@ -22,6 +22,7 @@ import net.minecraft.world.item.FishingRodItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 
 import java.util.Objects;
@@ -211,7 +212,8 @@ public class XPlusAutofish {
      */
     public boolean isBobberInWater(){
         if(client.player != null && client.level != null && client.player.fishing != null) {
-            return client.level.getBlockState(client.player.fishing.blockPosition()).getBlock() == Blocks.WATER;
+            Block block = client.level.getBlockState(client.player.fishing.blockPosition()).getBlock();
+            return block == Blocks.WATER || block == Blocks.BUBBLE_COLUMN;
         } else{
             return false;
         }
