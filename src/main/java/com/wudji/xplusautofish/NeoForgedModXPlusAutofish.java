@@ -9,6 +9,7 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundSystemChatPacket;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
@@ -17,7 +18,7 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.jarjar.nio.util.Lazy;
+import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.common.NeoForge;
@@ -30,8 +31,6 @@ public class NeoForgedModXPlusAutofish
 {
     // Define mod id in a common place for everything to reference
     public static final String MODID = "autofish";
-    public static final Lazy<KeyMapping> CONFIG_SCREEN_MAPPING = Lazy.of(() ->
-            new KeyMapping("key.autofish.open_gui", GLFW.GLFW_KEY_V, "XPlus Autofish"));
     // Directly reference a slf4j logger
     private static final Logger LOGGER = LogUtils.getLogger();
 
@@ -40,6 +39,11 @@ public class NeoForgedModXPlusAutofish
     private AutofishScheduler scheduler;
     private static KeyMapping autofishGuiKey;
     private ConfigManager configManager;
+
+    public static final KeyMapping.Category XPLUS_CATEGORY = new KeyMapping.Category(ResourceLocation.fromNamespaceAndPath("autofish", "category"));
+    public static final Lazy<KeyMapping> CONFIG_SCREEN_MAPPING = Lazy.of(() ->
+            new KeyMapping("key.autofish.open_gui", GLFW.GLFW_KEY_V, XPLUS_CATEGORY));
+
 
     public NeoForgedModXPlusAutofish(IEventBus modEventBus, ModContainer modContainer) {
         modEventBus.addListener(this::clientSetup);
@@ -61,7 +65,6 @@ public class NeoForgedModXPlusAutofish
 
     }
 
-
     @SubscribeEvent
     public void tick(ClientTickEvent.Post event) {
         if (this.autofish != null){
@@ -79,8 +82,10 @@ public class NeoForgedModXPlusAutofish
     public static class ClientModEvents {
         @SubscribeEvent
         public static void registerBindings(RegisterKeyMappingsEvent event) {
+            event.registerCategory(XPLUS_CATEGORY);
             event.register(CONFIG_SCREEN_MAPPING.get());
         }
+
     }
 
     /**
