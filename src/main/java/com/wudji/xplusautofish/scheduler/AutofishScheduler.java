@@ -2,6 +2,7 @@ package com.wudji.xplusautofish.scheduler;
 
 import com.mojang.authlib.minecraft.client.MinecraftClient;
 import com.wudji.xplusautofish.NeoForgedModXPlusAutofish;
+import com.wudji.xplusautofish.config.ConfigManager;
 import net.minecraft.client.Minecraft;
 
 import java.util.ArrayList;
@@ -55,7 +56,7 @@ public class AutofishScheduler {
     }
     //If player caught a fish,then turn view
     public void onFishCaught() {
-        if(modAutofish.getConfig().isAutofishEnabled() && !isTurning) {
+        if(modAutofish.getConfig().isAutofishEnabled() && !isViewTurning()) {
             scheduleViewTurn();
         }
     }
@@ -63,6 +64,7 @@ public class AutofishScheduler {
     private void scheduleViewTurn() {
         Minecraft client = Minecraft.getInstance();
         if(client.player == null) return;
+        if(!modAutofish.getConfig().isAutoTurnView()) return;
 
         //Save original yaw and pitch
         originalYaw = client.player.getYRot();
