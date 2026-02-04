@@ -9,7 +9,7 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundSystemChatPacket;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
@@ -40,7 +40,7 @@ public class NeoForgedModXPlusAutofish
     private static KeyMapping autofishGuiKey;
     private ConfigManager configManager;
 
-    public static final KeyMapping.Category XPLUS_CATEGORY = new KeyMapping.Category(ResourceLocation.fromNamespaceAndPath("autofish", "category"));
+    public static final KeyMapping.Category XPLUS_CATEGORY = new KeyMapping.Category(Identifier.fromNamespaceAndPath("autofish", "category"));
     public static final Lazy<KeyMapping> CONFIG_SCREEN_MAPPING = Lazy.of(() ->
             new KeyMapping("key.autofish.open_gui", GLFW.GLFW_KEY_V, XPLUS_CATEGORY));
 

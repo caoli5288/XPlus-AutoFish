@@ -5,7 +5,7 @@ import com.wudji.xplusautofish.mointor.FishMonitorMP;
 import com.wudji.xplusautofish.mointor.FishMonitorMPMotion;
 import com.wudji.xplusautofish.mointor.FishMonitorMPSound;
 import com.wudji.xplusautofish.scheduler.ActionType;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;

@@ -1,6 +1,6 @@
 package com.wudji.xplusautofish.scheduler;
 
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 
 public class Action {
     private ActionType actionType;
