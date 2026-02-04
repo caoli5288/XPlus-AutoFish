@@ -217,6 +217,19 @@ public class AutofishScreenBuilder {
                 .setYesNoTextSupplier(yesNoTextSupplier)
                 .build();
 
+        //Enable Arm Swing
+        AbstractConfigListEntry toggleArmSwing = entryBuilder.startBooleanToggle(Text.translatable("options.autofish.arm_swing.title"), config.isEnableArmSwing())
+                .setDefaultValue(defaults.isEnableArmSwing())
+                .setTooltip(
+                        Text.translatable("options.autofish.arm_swing.tooltip_0"),
+                        Text.translatable("options.autofish.arm_swing.tooltip_1")
+                )
+                .setSaveConsumer(newValue -> {
+                    modAutofish.getConfig().setEnableArmSwing(newValue);
+                })
+                .setYesNoTextSupplier(yesNoTextSupplier)
+                .build();
+
         //Turn Angle Slider
         AbstractConfigListEntry turnAngleSlider = entryBuilder.startFloatField(Text.translatable("options.autofish.turn_angle.title"), config.getTurnAngle())
                 .setDefaultValue(defaults.getTurnAngle())
@@ -250,6 +263,7 @@ public class AutofishScreenBuilder {
         subCatBuilderBasic.add(toggleBreakProtection);
         subCatBuilderBasic.add((togglePersistentMode));
         subCatBuilderBasic.add(toggleGUIChecker);
+        subCatBuilderBasic.add(toggleArmSwing);
         subCatBuilderBasic.add(toggleAutoTurnView);
         subCatBuilderBasic.add(turnAngleSlider);
         subCatBuilderBasic.add(turnDurationSlider);

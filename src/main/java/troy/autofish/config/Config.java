@@ -13,6 +13,7 @@ public class Config {
     @Expose boolean useSoundDetection = false;
     @Expose boolean forceMPDetection = false;
     @Expose boolean autoTurnView = false;
+    @Expose boolean enableArmSwing = true;
     @Expose float turnAngle = 30.0f;
     @Expose int turnDuration = 500;
     @Expose long recastDelay = 1500;
@@ -48,8 +49,16 @@ public class Config {
         return autoTurnView;
     }
 
+    public boolean isEnableArmSwing() {
+        return enableArmSwing;
+    }
+
     public void setAutoTurnView(boolean autoTurnView) {
         this.autoTurnView = autoTurnView;
+    }
+
+    public void setEnableArmSwing(boolean enableArmSwing) {
+        this.enableArmSwing = enableArmSwing;
     }
 
     public float getTurnAngle() {

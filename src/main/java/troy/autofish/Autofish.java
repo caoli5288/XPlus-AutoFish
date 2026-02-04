@@ -1,5 +1,9 @@
 package troy.autofish;
 
+import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
@@ -23,10 +27,6 @@ import troy.autofish.monitor.FishMonitorMP;
 import troy.autofish.monitor.FishMonitorMPMotion;
 import troy.autofish.monitor.FishMonitorMPSound;
 import troy.autofish.scheduler.ActionType;
-
-import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Autofish {
 
@@ -261,14 +261,14 @@ public class Autofish {
     public void useRod() {
         if(client.player != null && client.world != null) {
             Hand hand = getCorrectHand();
+            if (modAutofish.getConfig().isEnableArmSwing()) {
+                client.player.swingHand(hand);
+            }
             ActionResult actionResult = null;
             if (client.interactionManager != null) {
                 actionResult = client.interactionManager.interactItem(client.player, hand);
             }
             if (actionResult != null && actionResult.isAccepted()) {
-                if (actionResult == ActionResult.SUCCESS) {
-                    client.player.swingHand(hand);
-                }
                 client.gameRenderer.firstPersonRenderer.resetEquipProgress(hand);
             }
         }

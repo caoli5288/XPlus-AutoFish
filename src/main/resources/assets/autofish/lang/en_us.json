@@ -18,10 +18,9 @@
   "options.autofish.break_protection.tooltip_1": "durability before they break.",
 
   "options.autofish.open_water_detection.title": "Enable Open Water detection",
-  "options.autofish.open_water_detection.tooltip_0" : "In game versions above 20w12a(1.16),",
-  "options.autofish.open_water_detection.tooltip_1" : "You can only get treasure loot at open water.",
-  "options.autofish.open_water_detection.tooltip_2" : "This will alert you when you are not fishing at open water.",
-
+  "options.autofish.open_water_detection.tooltip_0": "In game versions above 20w12a(1.16),",
+  "options.autofish.open_water_detection.tooltip_1": "You can only get treasure loot at open water.",
+  "options.autofish.open_water_detection.tooltip_2": "This will alert you when you are not fishing at open water.",
 
   "options.autofish.persistent.title": "Enable Persistent Mode",
   "options.autofish.persistent.tooltip_0": "Enable this to always keep the fish hook",
@@ -77,6 +76,10 @@
   "options.autofish.auto_turn_view.tooltip_0": "Automatically turn the camera view",
   "options.autofish.auto_turn_view.tooltip_1": "when a fish is caught.",
 
+  "options.autofish.arm_swing.title": "Enable Arm Swing Animation",
+  "options.autofish.arm_swing.tooltip_0": "Show the arm swing animation when",
+  "options.autofish.arm_swing.tooltip_1": "automatically using the fishing rod.",
+
   "options.autofish.turn_angle.title": "Turn Angle",
   "options.autofish.turn_angle.tooltip_0": "The angle in degrees to turn the camera",
   "options.autofish.turn_angle.tooltip_1": "when a fish is caught.",
@@ -92,5 +95,4 @@
   "options.autofish.guichecker.title": "Disable Autofish in container GUI",
   "options.autofish.guichecker.tooltip_0": "Disable this mod when an container screen is set.",
   "options.autofish.guichecker.tooltip_1": "Detects chest, inventory, amongst other container GUI screens."
-
 }
