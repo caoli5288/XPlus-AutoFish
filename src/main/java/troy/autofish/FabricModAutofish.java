@@ -3,13 +3,13 @@ package troy.autofish;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.util.InputUtil;
-import net.minecraft.entity.Entity;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.s2c.play.GameMessageS2CPacket;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.KeyMapping;
+import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientboundSystemChatPacket;
+import net.minecraft.resources.ResourceLocation;
 import org.lwjgl.glfw.GLFW;
 import troy.autofish.config.Config;
 import troy.autofish.config.ConfigManager;
@@ -22,7 +22,7 @@ public class FabricModAutofish implements ClientModInitializer {
     private Autofish autofish;
     private GuiChecker guiChecker;
     private AutofishScheduler scheduler;
-    private KeyBinding autofishGuiKey;
+    private KeyMapping autofishGuiKey;
     private ConfigManager configManager;
 
     @Override
@@ -33,10 +33,10 @@ public class FabricModAutofish implements ClientModInitializer {
         //Create ConfigManager
         this.configManager = new ConfigManager(this);
         //Register Keybinding
-        autofishGuiKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+        autofishGuiKey = KeyBindingHelper.registerKeyBinding(new KeyMapping(
                 "key.autofish.open_gui",
-                InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_V,
-                KeyBinding.Category.create(Identifier.of("autofish")))
+                InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_V,
+                KeyMapping.Category.register(ResourceLocation.parse("autofish")))
         );
 
         //Register Tick Callback
@@ -49,10 +49,10 @@ public class FabricModAutofish implements ClientModInitializer {
 
     }
 
-    public void tick(MinecraftClient client) {
+    public void tick(Minecraft client) {
         if (this.autofish != null){
-            if (autofishGuiKey.wasPressed()) {
-                client.setScreen(AutofishScreenBuilder.buildScreen(this, client.currentScreen));
+            if (autofishGuiKey.consumeClick()) {
+                client.setScreen(AutofishScreenBuilder.buildScreen(this, client.screen));
             }
             guiChecker.toggleAutoFish(client);
             autofish.tick(client);
@@ -70,7 +70,7 @@ public class FabricModAutofish implements ClientModInitializer {
     /**
      * Mixin callback for chat packets
      */
-    public void handleChat(GameMessageS2CPacket packet) {
+    public void handleChat(ClientboundSystemChatPacket packet) {
         autofish.handleChat(packet);
     }
 

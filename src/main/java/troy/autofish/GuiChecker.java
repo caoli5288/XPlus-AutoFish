@@ -1,7 +1,7 @@
 package troy.autofish;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 
 public class GuiChecker {
     private FabricModAutofish modAutofish;
@@ -10,8 +10,8 @@ public class GuiChecker {
         this.modAutofish = modAutofish;
     }
 
-    public void toggleAutoFish(MinecraftClient client) {
+    public void toggleAutoFish(Minecraft client) {
         if(modAutofish.getConfig().isDisableInGUI())
-            this.modAutofish.getConfig().setAutofishEnabled(!(client.currentScreen instanceof GenericContainerScreen));
+            this.modAutofish.getConfig().setAutofishEnabled(!(client.screen instanceof ContainerScreen));
     }
 }
