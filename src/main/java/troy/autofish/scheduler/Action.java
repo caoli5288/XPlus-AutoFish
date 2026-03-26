@@ -1,6 +1,6 @@
 package troy.autofish.scheduler;
 
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 
 public class Action {
 

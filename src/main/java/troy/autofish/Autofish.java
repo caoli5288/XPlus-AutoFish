@@ -21,7 +21,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.util.StringUtil;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.core.BlockPos;
 import troy.autofish.monitor.FishMonitorMP;
 import troy.autofish.monitor.FishMonitorMPMotion;
@@ -35,8 +35,7 @@ public class Autofish {
     private FishMonitorMP fishMonitorMP;
 
     private boolean hookExists = false;
-    private boolean alreadyAlertOP = false;
-    private boolean alreadyPassOP = false;
+    private OpenWaterState lastOpenWaterState = OpenWaterState.UNKNOWN;
     private long hookRemovedAt = 0L;
 
     public long timeMillis = 0L;
@@ -185,35 +184,48 @@ public class Autofish {
          * */
         if(!modAutofish.getConfig().isOpenWaterDetectEnabled()) return;
 
-        int x = bobber.getBlockX();
-        int y = bobber.getBlockY();
-        int z = bobber.getBlockZ();
-        boolean flag = true;
-        for(int yi = -2; yi <= 2; yi++){
-            if(!(BlockPos.betweenClosedStream(x - 2, y + yi, z - 2, x + 2, y + yi, z + 2).allMatch((blockPos ->
-                    // every block is water
-                    bobber.level().getBlockState(blockPos).getBlock() == Blocks.WATER
-            )) || BlockPos.betweenClosedStream(x - 2, y + yi, z - 2, x + 2, y + yi, z + 2).allMatch((blockPos ->
-                    // or every block is air or lily pad
-                    bobber.level().getBlockState(blockPos).getBlock() == Blocks.AIR
-                            || bobber.level().getBlockState(blockPos).getBlock() == Blocks.LILY_PAD
-            )))){
-                // didn't pass the check
-                if(!alreadyAlertOP){
-                    Objects.requireNonNull(bobber.getPlayerOwner()).displayClientMessage(Component.translatable("info.autofish.open_water_detection.fail"),true);
-                    alreadyAlertOP = true;
-                    alreadyPassOP = false;
-                }
-                flag = false;
+        BlockPos bobberPos = bobber.blockPosition();
+        for(int yOffset = -2; yOffset <= 2; yOffset++){
+            if (!isOpenWaterLayer(bobber, bobberPos, yOffset)) {
+                notifyOpenWaterFailure(bobber);
+                return;
             }
         }
-        if(flag && !alreadyPassOP) {
-            Objects.requireNonNull(bobber.getPlayerOwner()).displayClientMessage(Component.translatable("info.autofish.open_water_detection.success"),true);
-            alreadyPassOP = true;
-            alreadyAlertOP = false;
-        }
 
+        notifyOpenWaterSuccess(bobber);
+    }
 
+    private boolean isOpenWaterLayer(FishingHook bobber, BlockPos bobberPos, int yOffset) {
+        int x = bobberPos.getX();
+        int y = bobberPos.getY() + yOffset;
+        int z = bobberPos.getZ();
+        return BlockPos.betweenClosedStream(x - 2, y, z - 2, x + 2, y, z + 2).allMatch(blockPos ->
+                isWaterBlock(bobber, blockPos))
+                || BlockPos.betweenClosedStream(x - 2, y, z - 2, x + 2, y, z + 2).allMatch(blockPos ->
+                isAirOrLilyPad(bobber, blockPos));
+    }
+
+    private boolean isWaterBlock(FishingHook bobber, BlockPos blockPos) {
+        return bobber.level().getBlockState(blockPos).getBlock() == Blocks.WATER;
+    }
+
+    private boolean isAirOrLilyPad(FishingHook bobber, BlockPos blockPos) {
+        Block block = bobber.level().getBlockState(blockPos).getBlock();
+        return block == Blocks.AIR || block == Blocks.LILY_PAD;
+    }
+
+    private void notifyOpenWaterFailure(FishingHook bobber) {
+        if(lastOpenWaterState == OpenWaterState.FAIL) return;
+
+        Objects.requireNonNull(bobber.getPlayerOwner()).sendOverlayMessage(Component.translatable("info.autofish.open_water_detection.fail"));
+        lastOpenWaterState = OpenWaterState.FAIL;
+    }
+
+    private void notifyOpenWaterSuccess(FishingHook bobber) {
+        if(lastOpenWaterState == OpenWaterState.SUCCESS) return;
+
+        Objects.requireNonNull(bobber.getPlayerOwner()).sendOverlayMessage(Component.translatable("info.autofish.open_water_detection.success"));
+        lastOpenWaterState = OpenWaterState.SUCCESS;
     }
 
     /**
@@ -314,15 +326,21 @@ public class Autofish {
     }
 
     private long getRandomDelay(){
-        return Math.random() >=0.5 ?
-                (long) (modAutofish.getConfig().getRecastDelay() * (1 - (Math.random() * modAutofish.getConfig().getRandomDelay() * 0.01))) :
-                (long) (modAutofish.getConfig().getRecastDelay() * (1 + (Math.random() * modAutofish.getConfig().getRandomDelay() * 0.01)));
-
+        long recastDelay = modAutofish.getConfig().getRecastDelay();
+        double randomDelayRatio = modAutofish.getConfig().getRandomDelay() * 0.01;
+        double randomOffset = (Math.random() * 2 - 1) * randomDelayRatio;
+        return (long) (recastDelay * (1 + randomOffset));
     }
 
     private boolean shouldPreventBreak(){
         if(!modAutofish.getConfig().isNoBreak()) return false;
         ItemStack item = getHeldItem();
         return item != null && item.getDamageValue() == item.getMaxDamage() - 1;
+    }
+
+    private enum OpenWaterState {
+        UNKNOWN,
+        SUCCESS,
+        FAIL
     }
 }

@@ -46,10 +46,10 @@ public class FishMonitorMPMotion implements FishMonitorMP {
     @Override
     public void handlePacket(Autofish autofish, Packet<?> packet, Minecraft minecraft) {
         if (packet instanceof ClientboundSetEntityMotionPacket velocityPacket) {
-            if (minecraft.player != null && minecraft.player.fishing != null && minecraft.player.fishing.getId() == velocityPacket.getId()) {
+            if (minecraft.player != null && minecraft.player.fishing != null && minecraft.player.fishing.getId() == velocityPacket.id()) {
                 // Wait until the bobber has rose in the water.
                 // Prevent remarking the bobber rise timestamp until it is reset by catching.
-                if (hasHitWater && bobberRiseTimestamp == 0 && velocityPacket.getMovement().y() > 0) {
+                if (hasHitWater && bobberRiseTimestamp == 0 && velocityPacket.movement().y() > 0) {
                     // Mark the time in which the bobber began to rise.
                     bobberRiseTimestamp = autofish.timeMillis;
                 }
@@ -60,7 +60,7 @@ public class FishMonitorMPMotion implements FishMonitorMP {
                 // If the bobber has been in the water long enough, start detecting the bobber movement.
                 if (hasHitWater && bobberRiseTimestamp != 0 && timeInWater > START_CATCHING_AFTER_THRESHOLD) {
                     // minecraft.player.sendMessage(Text.of("Y: "+ velocityPacket.getVelocityY()),true);
-                    if (velocityPacket.getMovement().x() == 0.0 && velocityPacket.getMovement().z() == 0.0 && velocityPacket.getMovement().y() < PACKET_MOTION_Y_THRESHOLD) {
+                    if (velocityPacket.movement().x() == 0.0 && velocityPacket.movement().z() == 0.0 && velocityPacket.movement().y() < PACKET_MOTION_Y_THRESHOLD) {
                         // Catch the fish
                         autofish.catchFish();
 

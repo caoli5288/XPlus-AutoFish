@@ -2,14 +2,14 @@ package troy.autofish;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.KeyMapping;
 import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundSystemChatPacket;
-import net.minecraft.resources.ResourceLocation;
 import org.lwjgl.glfw.GLFW;
 import troy.autofish.config.Config;
 import troy.autofish.config.ConfigManager;
@@ -18,6 +18,7 @@ import troy.autofish.scheduler.AutofishScheduler;
 
 public class FabricModAutofish implements ClientModInitializer {
 
+    public static final String MOD_ID = "autofish";
     private static FabricModAutofish instance;
     private Autofish autofish;
     private GuiChecker guiChecker;
@@ -32,11 +33,18 @@ public class FabricModAutofish implements ClientModInitializer {
 
         //Create ConfigManager
         this.configManager = new ConfigManager(this);
-        //Register Keybinding
-        autofishGuiKey = KeyBindingHelper.registerKeyBinding(new KeyMapping(
-                "key.autofish.open_gui",
-                InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_V,
-                KeyMapping.Category.register(ResourceLocation.parse("autofish")))
+
+        KeyMapping.Category CATEGORY = new KeyMapping.Category(
+                Identifier.fromNamespaceAndPath(MOD_ID, "autofish")
+        );
+
+        autofishGuiKey = KeyMappingHelper.registerKeyMapping(
+                new KeyMapping(
+                        "key.autofish.open_gui",
+                        InputConstants.Type.KEYSYM,
+                        GLFW.GLFW_KEY_V,
+                        CATEGORY
+                )
         );
 
         //Register Tick Callback

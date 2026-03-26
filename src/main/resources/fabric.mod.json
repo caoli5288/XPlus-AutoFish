@@ -41,7 +41,7 @@
   ],
 
   "depends": {
-    "fabric": "*",
-    "cloth-config": "*"
+    "fabric-api": ">=0.144.3",
+    "forgeconfigapiport": ">=26.1.0.1"
   }
 }
