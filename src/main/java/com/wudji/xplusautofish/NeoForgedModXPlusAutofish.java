@@ -17,10 +17,13 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
+import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.common.NeoForge;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
@@ -39,6 +42,7 @@ public class NeoForgedModXPlusAutofish
     private AutofishScheduler scheduler;
     private static KeyMapping autofishGuiKey;
     private ConfigManager configManager;
+    private ModContainer modContainer;
 
     public static final KeyMapping.Category XPLUS_CATEGORY = new KeyMapping.Category(Identifier.fromNamespaceAndPath("autofish", "category"));
     public static final Lazy<KeyMapping> CONFIG_SCREEN_MAPPING = Lazy.of(() ->
@@ -46,23 +50,33 @@ public class NeoForgedModXPlusAutofish
 
 
     public NeoForgedModXPlusAutofish(IEventBus modEventBus, ModContainer modContainer) {
+        this.modContainer = modContainer;
+        modContainer.registerConfig(ModConfig.Type.CLIENT, Config.SPEC);
+
+        modEventBus.addListener(this::onConfigLoaded);
+
         modEventBus.addListener(this::clientSetup);
 
         NeoForge.EVENT_BUS.register(this);
 
     }
 
+    private void onConfigLoaded(final ModConfigEvent.Loading event) {
+        if (event.getConfig().getModId().equals(MODID) && instance == null) {
+            instance = this;
+            // Config values are now valid and can be queried
+            this.configManager = new ConfigManager(this);
+
+
+        }
+    }
+
     private void clientSetup(final FMLClientSetupEvent clientSetupEvent) {
-        // ModLoadingContext.get().registerExtensionPoint(IExtensionPoint., () -> (new IExtensionPoint.DisplayTest(IExtensionPoint.DisplayTest.IGNORESERVERONLY, (a, b) -> {return true;})));
-        if (instance == null) instance = this;
-
-        //Create ConfigManager
-        this.configManager = new ConfigManager(this);
-        //Create Scheduler instance
+        // Register config screen factory (for mod list "Config" button and direct open)
         this.scheduler = new AutofishScheduler(this);
-        //Create Autofisher instance
         this.autofish = new XPlusAutofish(this);
-
+        modContainer.registerExtensionPoint(IConfigScreenFactory.class,
+                AutoFishConfigScreen::create);
     }
 
     @SubscribeEvent
@@ -70,7 +84,7 @@ public class NeoForgedModXPlusAutofish
         if (this.autofish != null){
             Minecraft client = Minecraft.getInstance();
             if (CONFIG_SCREEN_MAPPING.get().isDown()) {
-                client.setScreen(AutoFishConfigScreen.buildScreen(this, client.screen));
+                client.setScreen(AutoFishConfigScreen.create(modContainer, client.screen));
             }
             autofish.tick(client);
             scheduler.tick(client);

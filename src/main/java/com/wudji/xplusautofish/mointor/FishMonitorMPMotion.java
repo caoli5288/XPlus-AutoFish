@@ -3,6 +3,7 @@ package com.wudji.xplusautofish.mointor;
 import com.wudji.xplusautofish.XPlusAutofish;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.util.Mth;
@@ -44,11 +45,11 @@ public class FishMonitorMPMotion implements FishMonitorMP{
     public void handlePacket(XPlusAutofish autofish, Packet<?> packet, Minecraft minecraft) {
         if (packet instanceof ClientboundSetEntityMotionPacket) {
             ClientboundSetEntityMotionPacket velocityPacket = (ClientboundSetEntityMotionPacket) packet;
-            if (minecraft.player != null && minecraft.player.fishing != null && minecraft.player.fishing.getId() == velocityPacket.getId()) {
+            if (minecraft.player != null && minecraft.player.fishing != null && minecraft.player.fishing.getId() == velocityPacket.id()) {
 
                 // Wait until the bobber has rose in the water.
                 // Prevent remarking the bobber rise timestamp until it is reset by catching.
-                if (hasHitWater && bobberRiseTimestamp == 0 && velocityPacket.getMovement().y() > 0) {
+                if (hasHitWater && bobberRiseTimestamp == 0 && velocityPacket.movement().get(Direction.Axis.Y) > 0) {
                     // Mark the time in which the bobber began to rise.
                     bobberRiseTimestamp = autofish.timeMillis;
                 }
@@ -58,7 +59,7 @@ public class FishMonitorMPMotion implements FishMonitorMP{
 
                 // If the bobber has been in the water long enough, start detecting the bobber movement.
                 if (hasHitWater && bobberRiseTimestamp != 0 && timeInWater > START_CATCHING_AFTER_THRESHOLD) {
-                    if (velocityPacket.getMovement().x() == 0 && velocityPacket.getMovement().z() == 0 && velocityPacket.getMovement().y() < PACKET_MOTION_Y_THRESHOLD) {
+                    if (velocityPacket.movement().get(Direction.Axis.X) == 0 && velocityPacket.movement().get(Direction.Axis.Z) == 0 && velocityPacket.movement().get(Direction.Axis.Y) < PACKET_MOTION_Y_THRESHOLD) {
                         // Catch the fish
                         autofish.catchFish();
 

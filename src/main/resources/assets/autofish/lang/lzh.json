@@ -1,0 +1,52 @@
+{
+  "key.autofish.open_gui": "啟自動釣魚介面",
+  "key.category.autofish.category": "自動釣魚",
+
+  "autofish.configuration.general": "基設",
+  "autofish.configuration.advanced": "進設",
+
+  "autofish.configuration.autofishEnabled": "啓用自動釣魚",
+  "autofish.configuration.autofishEnabled.tooltip": "開關改囊機能。",
+
+  "autofish.configuration.multiRod": "啟用多竿",
+  "autofish.configuration.multiRod.tooltip": "輪流遍歷其諸捷槽中所有可用之竿，竿毀即繼以次竿。",
+
+  "autofish.configuration.openWaterDetectEnabled": "啟用廣水域感測",
+  "autofish.configuration.openWaterDetectEnabled.tooltip": "於戲版逾1.16者，唯於廣水可得寶藏。非於廣水垂釣，當以此提醒於汝。",
+
+  "autofish.configuration.noBreak": "啟用防斷",
+  "autofish.configuration.noBreak.tooltip": "勿用耐久低之竿，以防其損折。",
+
+  "autofish.configuration.persistentMode": "啟用恆久模式",
+  "autofish.configuration.persistentMode.tooltip": "啟此項則持竿之際魚鉤恆拋不息。每十秒一驗，若需則重拋。",
+
+  "autofish.configuration.autoTurnView": "啟用自轉視角",
+  "autofish.configuration.autoTurnView.tooltip": "釣得魚時自轉攝像視角。",
+
+  "autofish.configuration.turnAngle": "轉向角度",
+  "autofish.configuration.turnAngle.tooltip": "釣到魚時攝像機轉向之角度（度數）。",
+
+  "autofish.configuration.turnDuration": "轉向持續時間（毫秒）",
+  "autofish.configuration.turnDuration.tooltip": "保持轉向視角之時長，之後恢復至原位（毫秒）。",
+
+  "autofish.configuration.useSoundDetection": "倚聲感知",
+  "autofish.configuration.useSoundDetection.tooltip": "新式精確檢測，據以浮標聲響為基，非關常規鉤動察覺。需近鉤方能生效。他人鉤近汝鉤或致誤報魚獲！註：此項僅影響眾戲，獨戲則自備察別。",
+
+  "autofish.configuration.forceMPDetection": "強用眾戲感知（改囊相容）",
+  "autofish.configuration.forceMPDetection.tooltip": "獨戲亦遵眾戲檢，以保外添改囊相容。",
+
+  "autofish.configuration.recastDelay": "再投延逾（毫秒）",
+  "autofish.configuration.recastDelay.tooltip": "調釣魚之間隔，毫秒以為計。範圍：500–5000 毫秒。",
+
+  "autofish.configuration.randomPercent": "隨機再投延逾",
+  "autofish.configuration.randomPercent.tooltip": "為投竿延逾增減百分之變數。譬如：定為百分之二十，一千五百毫秒之延逾將落於一千二百至一千八百毫秒間。設為零以解此功。",
+
+  "autofish.configuration.reelInDelay": "收竿延遲（毫秒）",
+  "autofish.configuration.reelInDelay.tooltip": "當魚咬鉤時延遲片刻收竿。設為一以禁用此功。",
+
+  "autofish.configuration.clearLagRegex": "論板重投規式",
+  "autofish.configuration.clearLagRegex.tooltip": "以論板之規則表達式觸發再投竿。",
+
+  "info.autofish.open_water_detection.fail": "§c「自動釣魚」君之所釣非廣水域，寶藏無由獲也！§0",
+  "info.autofish.open_water_detection.success": "§2「自動釣魚」君正於廣闊水面垂釣！§0"
+}

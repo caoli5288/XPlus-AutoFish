@@ -74,11 +74,11 @@ public class AutofishScheduler {
         //Schedule a view turn action
         scheduleAction(ActionType.TURN_VIEW, 0, () -> {
             if (client.player != null) {
-                float turnAngle = modAutofish.getConfig().getTurnAngle();
+                double turnAngle = modAutofish.getConfig().getTurnAngle();
                 if (!turnLeft) {
                     turnAngle = -turnAngle;
                 }
-                float targetYaw = client.player.getYRot() + turnAngle;
+                float targetYaw = (float) (client.player.getYRot() + turnAngle);
                 client.player.setYRot(targetYaw);
             }
         });

@@ -33,7 +33,6 @@ public class XPlusAutofish {
     private Minecraft client;
     private NeoForgedModXPlusAutofish modAutofish;
     private FishMonitorMP fishMonitorMP;
-
     private boolean hookExists = false;
     private long hookRemovedAt = 0L;
     private boolean alreadyAlertOP = false;
@@ -199,7 +198,7 @@ public class XPlusAutofish {
                                 return;
                             }
                         } else {
-                            inventory.setSelectedSlot(i);;
+                            inventory.setSelectedSlot(i);
                             return;
                         }
                     }
@@ -278,7 +277,7 @@ public class XPlusAutofish {
             )))){
                 // didn't pass the check
                 if(!alreadyAlertOP){
-                    Objects.requireNonNull(bobber.getPlayerOwner()).displayClientMessage(Component.translatable("info.autofish.open_water_detection.fail"),true);
+                    Objects.requireNonNull(bobber.getPlayerOwner()).sendOverlayMessage(Component.translatable("info.autofish.open_water_detection.fail"));
                     alreadyAlertOP = true;
                     alreadyPassOP = false;
                 }
@@ -286,7 +285,7 @@ public class XPlusAutofish {
             }
         }
         if(flag && !alreadyPassOP) {
-            Objects.requireNonNull(bobber.getPlayerOwner()).displayClientMessage(Component.translatable("info.autofish.open_water_detection.success"),true);
+            Objects.requireNonNull(bobber.getPlayerOwner()).sendOverlayMessage(Component.translatable("info.autofish.open_water_detection.success"));
             alreadyPassOP = true;
             alreadyAlertOP = false;
         }
@@ -295,7 +294,9 @@ public class XPlusAutofish {
     }
 
     private ItemStack getHeldItem() {
+        if(this.client == null) return null;
         if (!modAutofish.getConfig().isMultiRod()) {
+
             if (client.player != null && isItemFishingRod(client.player.getOffhandItem().getItem()))
                 return client.player.getOffhandItem();
         }
@@ -319,6 +320,7 @@ public class XPlusAutofish {
 
     private boolean shouldUseMPDetection(){
         if(modAutofish.getConfig().isForceMPDetection()) return true;
+        if (this.client == null) return false;
         return !client.isLocalServer();
     }
 
