@@ -84,7 +84,7 @@ public class NeoForgedModXPlusAutofish
         if (this.autofish != null){
             Minecraft client = Minecraft.getInstance();
             if (CONFIG_SCREEN_MAPPING.get().isDown()) {
-                client.setScreen(AutoFishConfigScreen.create(modContainer, client.screen));
+                client.setScreenAndShow(AutoFishConfigScreen.create(modContainer, client.gui.screen()));
             }
             autofish.tick(client);
             scheduler.tick(client);
