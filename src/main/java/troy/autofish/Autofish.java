@@ -1,7 +1,6 @@
 package troy.autofish;
 
 import java.util.Objects;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.minecraft.world.level.block.Block;
@@ -37,6 +36,9 @@ public class Autofish {
     private boolean hookExists = false;
     private OpenWaterState lastOpenWaterState = OpenWaterState.UNKNOWN;
     private long hookRemovedAt = 0L;
+
+    private Pattern cachedPattern;
+    private String cachedRegex;
 
     public long timeMillis = 0L;
 
@@ -119,23 +121,29 @@ public class Autofish {
      * For multiplayer detection only
      */
     public void handleChat(ClientboundSystemChatPacket packet) {
-        if (modAutofish.getConfig().isAutofishEnabled()) {
-            if (!client.isLocalServer()) {
-                if (isHoldingFishingRod()) {
-                    //check that either the hook exists, or it was just removed
-                    //this prevents false casts if we are holding a rod but not fishing
-                    if (hookExists || (timeMillis - hookRemovedAt < 2000)) {
-                        //make sure there is actually something there in the regex field
-                        if (org.apache.commons.lang3.StringUtils.deleteWhitespace(modAutofish.getConfig().getClearLagRegex()).isEmpty())
-                            return;
-                        //check if it matches
-                        Matcher matcher = Pattern.compile(modAutofish.getConfig().getClearLagRegex(), Pattern.CASE_INSENSITIVE).matcher(StringUtil.stripColor(packet.content().getString()));
-                        if (matcher.find()) {
-                            queueRecast();
-                        }
-                    }
-                }
-            }
+        if (!modAutofish.getConfig().isAutofishEnabled()) {
+            return;
+        }
+        if (client.isLocalServer()) {
+            return;
+        }
+        if (!isHoldingFishingRod()) {
+            return;
+        }
+        if (!hookExists && (timeMillis - hookRemovedAt >= 2000)) {
+            return;
+        }
+
+        String regex = modAutofish.getConfig().getClearLagRegex();
+        if (org.apache.commons.lang3.StringUtils.deleteWhitespace(regex).isEmpty()) {
+            return;
+        }
+        if (cachedPattern == null || !regex.equals(cachedRegex)) {
+            cachedPattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+            cachedRegex = regex;
+        }
+        if (cachedPattern.matcher(StringUtil.stripColor(packet.content().getString())).find()) {
+            queueRecast();
         }
     }
 
