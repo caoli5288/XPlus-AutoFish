@@ -12,6 +12,6 @@ public class GuiChecker {
 
     public void toggleAutoFish(Minecraft client) {
         if(modAutofish.getConfig().isDisableInGUI())
-            this.modAutofish.getConfig().setAutofishEnabled(!(client.screen instanceof ContainerScreen));
+            this.modAutofish.getConfig().setAutofishEnabled(!(client.gui.screen() instanceof ContainerScreen));
     }
 }

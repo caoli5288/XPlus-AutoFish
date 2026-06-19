@@ -60,7 +60,7 @@ public class FabricModAutofish implements ClientModInitializer {
     public void tick(Minecraft client) {
         if (this.autofish != null){
             if (autofishGuiKey.consumeClick()) {
-                client.setScreen(AutofishScreenBuilder.buildScreen(this, client.screen));
+                client.setScreenAndShow(AutofishScreenBuilder.buildScreen(this, client.gui.screen()));
             }
             guiChecker.toggleAutoFish(client);
             autofish.tick(client);
