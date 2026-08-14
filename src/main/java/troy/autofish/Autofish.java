@@ -25,13 +25,17 @@ import net.minecraft.core.BlockPos;
 import troy.autofish.monitor.FishMonitorMP;
 import troy.autofish.monitor.FishMonitorMPMotion;
 import troy.autofish.monitor.FishMonitorMPSound;
+import troy.autofish.scheduler.Action;
 import troy.autofish.scheduler.ActionType;
 
 public class Autofish {
 
+    private static final long PERSISTENT_MODE_INTERVAL = 10000L;
+
     private Minecraft client;
     private FabricModAutofish modAutofish;
     private FishMonitorMP fishMonitorMP;
+    private final Action persistentModeAction;
 
     private boolean hookExists = false;
     private OpenWaterState lastOpenWaterState = OpenWaterState.UNKNOWN;
@@ -47,20 +51,32 @@ public class Autofish {
         this.client = Minecraft.getInstance();
         setDetection();
 
-        //Initiate the repeating action for persistent mode casting
-        modAutofish.getScheduler().scheduleRepeatingAction(10000, () -> {
-            if(!modAutofish.getConfig().isPersistentMode()) return;
-            if(shouldPreventBreak()) return;
-            if(!isHoldingFishingRod()) return;
-            if(hookExists){
-                if(isBobberInWater()) return;
+        // Initiate the repeating action for persistent mode casting.
+        persistentModeAction = modAutofish.getScheduler().scheduleRepeatingAction(
+                PERSISTENT_MODE_INTERVAL, this::checkPersistentMode);
+    }
 
-                else useRod();
-            }
-            if(modAutofish.getScheduler().isRecastQueued()) return;
+    private void checkPersistentMode() {
+        if(!modAutofish.getConfig().isAutofishEnabled()) return;
+        if(!modAutofish.getConfig().isPersistentMode()) return;
+        if(shouldPreventBreak()) return;
+        if(!isHoldingFishingRod()) return;
 
+        // A normal recast owns the rod until it has run. In particular, do not let
+        // the ten-second check reel the hook just before that queued cast.
+        if(modAutofish.getScheduler().isRecastQueued()) return;
+
+        if(hookExists) {
+            if(isBobberInWater()) return;
+
+            // Reel once, then let the regular delayed recast perform the cast.
+            // Falling through here used to use the rod twice in the same tick.
+            queueRecast();
             useRod();
-        });
+            return;
+        }
+
+        useRod();
     }
 
     public void tick(Minecraft client) {
@@ -290,6 +306,10 @@ public class Autofish {
             }
             if (actionResult != null && actionResult.consumesAction()) {
                 client.gameRenderer.itemInHandRenderer.itemUsed(hand);
+                // Start the persistent-mode timeout from the actual rod action.
+                // This also prevents a due repeating check from casting again in
+                // the same tick as a scheduled recast.
+                persistentModeAction.resetTimer();
             }
         }
     }

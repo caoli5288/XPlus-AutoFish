@@ -122,8 +122,10 @@ public class AutofishScheduler {
         queuedActions.add(action);
     }
 
-    public void scheduleRepeatingAction(long interval, Runnable runnable) {
-        repeatingActions.add(new Action(ActionType.REPEATING_ACTION, interval, runnable));
+    public Action scheduleRepeatingAction(long interval, Runnable runnable) {
+        Action action = new Action(ActionType.REPEATING_ACTION, interval, runnable);
+        repeatingActions.add(action);
+        return action;
     }
 
     public boolean isRecastQueued() {
