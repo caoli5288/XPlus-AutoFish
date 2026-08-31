@@ -74,5 +74,13 @@
   "options.autofish.advanced.title": "進階選項",
 
   "info.autofish.open_water_detection.fail": "§c[自動釣魚] 你釣魚的區域不是開放水域！§0",
-  "info.autofish.open_water_detection.success": "§2[自動釣魚] 你正在開放水域釣魚！§0"
+  "options.autofish.open_water_detection.success": "§2[自動釣魚] 你正在開放水域釣魚！§0",
+  "options.autofish.chat_depleted.title": "魚竿耗盡聊天文字",
+  "options.autofish.chat_depleted.tooltip": "聊天中出現此文字時收竿並停止重新拋竿。",
+  "options.autofish.chat_caught.title": "收魚聊天文字",
+  "options.autofish.chat_caught.tooltip": "聊天中出現此文字時執行收魚。",
+  "options.autofish.title_catch.title": "標題／副標題收魚文字",
+  "options.autofish.title_catch.tooltip": "標題或副標題中出現此文字時執行收魚。",
+  "options.autofish.focus_window_depleted.title": "偵測魚竿耗盡時置前視窗",
+  "options.autofish.focus_window_depleted.tooltip": "偵測到耗盡文字時將 Minecraft 視窗置於前景。"
 }

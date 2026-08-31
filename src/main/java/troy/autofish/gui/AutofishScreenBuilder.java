@@ -204,6 +204,41 @@ public class AutofishScreenBuilder {
                 })
                 .build();
 
+        //Depleted chat pattern
+        AbstractConfigListEntry chatDepletedField = entryBuilder.startTextField(
+                        Text.translatable("options.autofish.chat_depleted.title"),
+                        config.getChatDepleted())
+                .setDefaultValue(defaults.getChatDepleted())
+                .setTooltip(Text.translatable("options.autofish.chat_depleted.tooltip"))
+                .setSaveConsumer(newValue -> {
+                    modAutofish.getConfig().setChatDepleted(newValue);
+                })
+                .build();
+
+        //Caught chat pattern
+        AbstractConfigListEntry chatCaughtField = entryBuilder.startTextField(
+                        Text.translatable("options.autofish.chat_caught.title"),
+                        config.getChatCaught())
+                .setDefaultValue(defaults.getChatCaught())
+                .setTooltip(Text.translatable("options.autofish.chat_caught.tooltip"))
+                .setSaveConsumer(newValue -> {
+                    modAutofish.getConfig().setChatCaught(newValue);
+                })
+                .build();
+
+        //Catch title/subtitle pattern
+        AbstractConfigListEntry titleCatchField = entryBuilder.startTextField(
+                        Text.translatable("options.autofish.title_catch.title"),
+                        config.getTitleCatch())
+                .setDefaultValue(defaults.getTitleCatch())
+                .setTooltip(Text.translatable("options.autofish.title_catch.tooltip"))
+                .setSaveConsumer(newValue -> {
+                    modAutofish.getConfig().setTitleCatch(newValue);
+                    modAutofish.getAutofish().setDetection();
+                })
+                .build();
+
+
         //Enable Auto Turn View
         AbstractConfigListEntry toggleAutoTurnView = entryBuilder.startBooleanToggle(Text.translatable("options.autofish.auto_turn_view.title"), config.isAutoTurnView())
                 .setDefaultValue(defaults.isAutoTurnView())
@@ -276,6 +311,9 @@ public class AutofishScreenBuilder {
         subCatBuilderAdvanced.add(randomDelaySlider);
         subCatBuilderAdvanced.add(reelInDelay);
         subCatBuilderAdvanced.add(clearLagRegexField);
+        subCatBuilderAdvanced.add(titleCatchField);
+        subCatBuilderAdvanced.add(chatDepletedField);
+        subCatBuilderAdvanced.add(chatCaughtField);
         subCatBuilderAdvanced.setExpanded(false);
 
         configCat.addEntry(subCatBuilderBasic.build());

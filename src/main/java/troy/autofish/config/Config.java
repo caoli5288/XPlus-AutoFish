@@ -20,6 +20,9 @@ public class Config {
     @Expose long randomPercent = 50;
     @Expose long reelInDelay = 1;
     @Expose String clearLagRegex = "\\[ClearLag\\] Removed [0-9]+ Entities!";
+    @Expose String chatDepleted = "Depleted";
+    @Expose String chatCaught = "You caught";
+    @Expose String titleCatch = "Catch";
 
     public boolean isAutofishEnabled() {
         return isAutofishEnabled;
@@ -144,6 +147,42 @@ public class Config {
 
     public void setDisableInGUI(boolean disableInGUI) {
         this.disableInGUI = disableInGUI;
+    }
+
+    public String getChatDepleted() {
+        return chatDepleted;
+    }
+
+    public String getChatCaught() {
+        return chatCaught;
+    }
+
+    public boolean isEnableChatDepleted() {
+        return chatDepleted != null && !chatDepleted.isEmpty();
+    }
+
+    public boolean isEnableChatCaught() {
+        return chatCaught != null && !chatCaught.isEmpty();
+    }
+
+    public void setChatDepleted(String chatDepleted) {
+        this.chatDepleted = chatDepleted;
+    }
+
+    public void setChatCaught(String chatCaught) {
+        this.chatCaught = chatCaught;
+    }
+
+    public String getTitleCatch() {
+        return titleCatch;
+    }
+
+    public boolean isEnableTitleCatch() {
+        return titleCatch != null && !titleCatch.isEmpty();
+    }
+
+    public void setTitleCatch(String titleCatch) {
+        this.titleCatch = titleCatch;
     }
 
     /**

@@ -130,4 +130,8 @@ public class AutofishScheduler {
         //True if any scheduled actions are of the RECAST type
         return queuedActions.stream().anyMatch(action -> action.getActionType() == ActionType.RECAST);
     }
+
+    public boolean stopAction(ActionType type) {
+        return queuedActions.removeIf(l -> l.getActionType() == type);
+    }
 }

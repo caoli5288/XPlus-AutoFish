@@ -69,5 +69,13 @@
   "options.autofish.advanced.title": "進設",
 
   "info.autofish.open_water_detection.fail": "§c「自動釣魚」君之所釣非廣水域，寶藏無由獲也！§0",
-  "info.autofish.open_water_detection.success": "§2「自動釣魚」君正於廣闊水面垂釣！§0"
+  "options.autofish.open_water_detection.success": "§2「自動釣魚」君正於廣闊水面垂釣！§0",
+  "options.autofish.chat_depleted.title": "耗竭聊天文字",
+  "options.autofish.chat_depleted.tooltip": "聊天出現此文字時收竿並停止再投竿。",
+  "options.autofish.chat_caught.title": "得魚聊天文字",
+  "options.autofish.chat_caught.tooltip": "聊天出現此文字時收魚。",
+  "options.autofish.title_catch.title": "題／副題收魚文字",
+  "options.autofish.title_catch.tooltip": "題或副題出現此文字時收魚。",
+  "options.autofish.focus_window_depleted.title": "耗竭時置前視窗",
+  "options.autofish.focus_window_depleted.tooltip": "偵得耗竭文字時將 Minecraft 視窗置於前景。"
 }

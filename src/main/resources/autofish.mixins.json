@@ -6,7 +6,8 @@
   "mixins": [],
   "client": [
     "MixinFishHookEntity",
-    "MixinClientPlayNetworkHandler"
+    "MixinClientPlayNetworkHandler",
+    "MixinMinecraftClient"
   ],
   "injectors": {
     "defaultRequire": 1

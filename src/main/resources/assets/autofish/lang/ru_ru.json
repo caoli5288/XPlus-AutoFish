@@ -73,5 +73,13 @@
   "options.autofish.advanced.title": "Расширенные настройки",
 
   "info.autofish.open_water_detection.fail": "§c[Autofish] Вы находитесь не на открытой воде!§0",
-  "info.autofish.open_water_detection.success": "§2[Autofish] Вы ловите рыбу на открытой воде!§0"
+  "info.autofish.open_water_detection.success": "§2[Autofish] Вы ловите рыбу на открытой воде!§0",
+  "options.autofish.chat_depleted.title": "Текст истощения удочки в чате",
+  "options.autofish.chat_depleted.tooltip": "Перезабросить удочку и прекратить перезаброски при появлении этого текста в чате.",
+  "options.autofish.chat_caught.title": "Шаблон сообщения о поимке",
+  "options.autofish.chat_caught.tooltip": "Поймать рыбу при появлении этого текста в чате.",
+  "options.autofish.title_catch.title": "Шаблон по заголовку/подзаголовку",
+  "options.autofish.title_catch.tooltip": "Поймать рыбу при появлении этого текста в заголовке или подзаголовке.",
+  "options.autofish.focus_window_depleted.title": "Переводить окно на передний план при истощении",
+  "options.autofish.focus_window_depleted.tooltip": "Перевести Minecraft на передний план при обнаружении текста истощения."
 }

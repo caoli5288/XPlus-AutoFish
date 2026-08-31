@@ -25,7 +25,10 @@ import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import troy.autofish.monitor.FishMonitorMP;
 import troy.autofish.monitor.FishMonitorMPMotion;
+import troy.autofish.mixin.MixinMinecraftClient;
 import troy.autofish.monitor.FishMonitorMPSound;
+import troy.autofish.config.Config;
+import troy.autofish.monitor.FishMonitorMPCatch;
 import troy.autofish.scheduler.ActionType;
 
 public class Autofish {
@@ -40,6 +43,7 @@ public class Autofish {
     private long hookRemovedAt = 0L;
 
     public long timeMillis = 0L;
+    private boolean depleted;
 
     public Autofish(FabricModAutofish modAutofish) {
         this.modAutofish = modAutofish;
@@ -120,15 +124,30 @@ public class Autofish {
      * For multiplayer detection only
      */
     public void handleChat(GameMessageS2CPacket packet) {
-        if (modAutofish.getConfig().isAutofishEnabled()) {
+        if (!modAutofish.getConfig().isAutofishEnabled()) {
+            return;
+        }
+
+        String message = StringHelper.stripTextFormat(packet.content().getString());
+        if (modAutofish.getConfig().isEnableChatDepleted()
+                && message.contains(modAutofish.getConfig().getChatDepleted())) {
+            if (!modAutofish.getScheduler().stopAction(ActionType.RECAST)) {
+                depleted = true;
+            }
+        }
+
+        if (modAutofish.getConfig().isEnableChatCaught()
+                && message.contains(modAutofish.getConfig().getChatCaught())) {
+            queueActions();
+        }
+
+        if (!org.apache.commons.lang3.StringUtils.isEmpty(modAutofish.getConfig().getClearLagRegex())) {
             if (!client.isInSingleplayer()) {
                 if (isHoldingFishingRod()) {
                     //check that either the hook exists, or it was just removed
                     //this prevents false casts if we are holding a rod but not fishing
                     if (hookExists || (timeMillis - hookRemovedAt < 2000)) {
                         //make sure there is actually something there in the regex field
-                        if (org.apache.commons.lang3.StringUtils.deleteWhitespace(modAutofish.getConfig().getClearLagRegex()).isEmpty())
-                            return;
                         //check if it matches
                         Matcher matcher = Pattern.compile(modAutofish.getConfig().getClearLagRegex(), Pattern.CASE_INSENSITIVE).matcher(StringHelper.stripTextFormat(packet.content().getString()));
                         if (matcher.find()) {
@@ -146,16 +165,30 @@ public class Autofish {
             if (client.player != null) {
                 detectOpenWater(client.player.fishHook);
             }
-            //queue actions
-            queueRodSwitch();
-            queueRecast();
+            if (!modAutofish.getConfig().isEnableChatCaught()) {
+                queueActions();
+            }
             modAutofish.getScheduler().scheduleAction(ActionType.REEL_IN, modAutofish.getConfig().getReelInDelay(), this::useRod);
         }
     }
 
+    private void queueActions() {
+        if (depleted) {
+            depleted = false;
+        } else {
+            //queue actions
+            queueRodSwitch();
+            queueRecast();
+        }
+    }
+
     public void queueRecast() {
+        long reelInDelay = modAutofish.getConfig().getReelInDelay();
+        if (modAutofish.getConfig().isEnableChatCaught()) {
+            reelInDelay = 0;
+        }
         modAutofish.getScheduler().scheduleAction(ActionType.RECAST, getRandomDelay()
-                + modAutofish.getConfig().getReelInDelay(), () -> {
+                + reelInDelay, () -> {
             //State checks to ensure we can still fish once this runs
             if(hookExists) return;
             if(!isHoldingFishingRod()) return;
@@ -166,8 +199,12 @@ public class Autofish {
     }
 
     private void queueRodSwitch(){
+        long reelInDelay = modAutofish.getConfig().getReelInDelay();
+        if (modAutofish.getConfig().isEnableChatCaught()) {
+            reelInDelay = 0;
+        }
         modAutofish.getScheduler().scheduleAction(ActionType.ROD_SWITCH, (long) (getRandomDelay() * 0.83)
-                + modAutofish.getConfig().getReelInDelay(), () -> {
+                + reelInDelay, () -> {
             if(!modAutofish.getConfig().isMultiRod()) return;
 
             switchToFirstRod(client.player);
@@ -259,18 +296,19 @@ public class Autofish {
     }
 
     public void useRod() {
-        if(client.player != null && client.world != null) {
-            Hand hand = getCorrectHand();
-            if (modAutofish.getConfig().isEnableArmSwing()) {
-                client.player.swingHand(hand);
-            }
-            ActionResult actionResult = null;
-            if (client.interactionManager != null) {
-                actionResult = client.interactionManager.interactItem(client.player, hand);
-            }
-            if (actionResult != null && actionResult.isAccepted()) {
-                client.gameRenderer.firstPersonRenderer.resetEquipProgress(hand);
-            }
+        if (client.player != null && client.world != null) {
+//            Hand hand = getCorrectHand();
+//            if (modAutofish.getConfig().isEnableArmSwing()) {
+//                client.player.swingHand(hand);
+//            }
+//            ActionResult actionResult = null;
+//            if (client.interactionManager != null) {
+//                actionResult = client.interactionManager.interactItem(client.player, hand);
+//            }
+//            if (actionResult != null && actionResult.isAccepted()) {
+//                client.gameRenderer.firstPersonRenderer.resetEquipProgress(hand);
+//            }
+            ((MixinMinecraftClient) client).invokeDoItemUse();
         }
     }
 
@@ -300,13 +338,20 @@ public class Autofish {
         return item == Items.FISHING_ROD || item instanceof FishingRodItem;
     }
 
+
+    public Config getConfig() {
+        return modAutofish.getConfig();
+    }
     public void setDetection() {
-        if (modAutofish.getConfig().isUseSoundDetection()) {
+        if (modAutofish.getConfig().isEnableTitleCatch()) {
+            fishMonitorMP = new FishMonitorMPCatch();
+        } else if (modAutofish.getConfig().isUseSoundDetection()) {
             fishMonitorMP = new FishMonitorMPSound();
         } else {
             fishMonitorMP = new FishMonitorMPMotion();
         }
     }
+
 
     private boolean shouldUseMPDetection(){
         if(modAutofish.getConfig().isForceMPDetection()) return true;

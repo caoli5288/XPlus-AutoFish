@@ -65,5 +65,13 @@
   "options.autofish.random_delay.tooltip_2": "a 1500ms delay fall in 1200-1800ms (1500ms ±20%).",
   "options.autofish.random_delay.tooltip_3": "Set this to 0 to disable this function.",
   "info.autofish.open_water_detection.fail": "§c[Autofish] The area you're fishing in is not open water!§0",
-  "info.autofish.open_water_detection.success": "§2[Autofish] You're fishing in open water!§0"
+  "options.autofish.open_water_detection.success": "§2[Autofish] You're fishing in open water!§0",
+  "options.autofish.chat_depleted.title": "Depleted Chat Pattern",
+  "options.autofish.chat_depleted.tooltip": "Reel in and stop recasting when this text appears in chat.",
+  "options.autofish.chat_caught.title": "Caught Chat Pattern",
+  "options.autofish.chat_caught.tooltip": "Catch a fish when this text appears in chat.",
+  "options.autofish.title_catch.title": "Title/Subtitle Catch Pattern",
+  "options.autofish.title_catch.tooltip": "Catch a fish when this text appears in a title or subtitle.",
+  "options.autofish.focus_window_depleted.title": "Focus Window on Depleted",
+  "options.autofish.focus_window_depleted.tooltip": "Bring Minecraft to the foreground when the depleted text is detected."
 }
